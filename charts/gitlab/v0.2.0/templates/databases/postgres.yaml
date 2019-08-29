@@ -110,7 +110,7 @@ spec:
       - renameKey:
         from: POSTGRES_USER
         to: username
-              - renameKey:
+          - renameKey:
               from: POSTGRES_PASSWORD
               to: password
   type: kubedb.com/postgres
@@ -167,4 +167,5 @@ spec:
   rules:
       - snapshots:
         - {{ $restore.postgresSnapshot }}
+  {{- end }}
   {{- end }}
