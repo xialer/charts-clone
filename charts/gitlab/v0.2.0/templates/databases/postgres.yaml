@@ -168,4 +168,3 @@ spec:
       - snapshots:
         - {{ $restore.postgresSnapshot }}
   {{- end }}
-  {{- end }}
