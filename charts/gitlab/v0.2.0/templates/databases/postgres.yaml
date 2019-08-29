@@ -25,17 +25,17 @@ spec:
   storageType: Durable
   storage:
     {{- if .Values.persistence.storageClass }}
-    {{- if (eq "-" .Values.persistence.storageClass) }}
-    storageClassName: ''
-    {{- else }}
-    storageClassName: {{ .Values.persistence.storageClass }}
-    {{- end }}
-    {{- end }}
-    accessModes:
-      - {{ .Values.persistence.accessMode }}
-    resources:
-      requests:
-        storage: {{ .Values.persistence.size }}
+      {{- if (eq "-" .Values.persistence.storageClass) }}
+      storageClassName: ''
+      {{- else }}
+      storageClassName: {{ .Values.persistence.storageClass }}
+      {{- end }}
+      {{- end }}
+      accessModes:
+        - {{ .Values.persistence.accessMode }}
+      resources:
+        requests:
+          storage: {{ .Values.persistence.size }}
   {{- else }}
   storageType: Ephemeral
   {{- end }}
@@ -83,7 +83,7 @@ spec:
   {{- else }}
   terminationPolicy: Delete
   {{- end }}
-{{- if .Values.persistence.backup.enabled }}
+  {{- if .Values.persistence.backup.enabled }}
 ---
 apiVersion: appcatalog.appscode.com/v1alpha1
 kind: AppBinding
@@ -107,16 +107,16 @@ spec:
   secret:
     name: {{ template "gitlab.sharedname" . }}-postgres-auth
   secretTransforms:
-    - renameKey:
+      - renameKey:
         from: POSTGRES_USER
         to: username
-    - renameKey:
-        from: POSTGRES_PASSWORD
-        to: password
+              - renameKey:
+              from: POSTGRES_PASSWORD
+              to: password
   type: kubedb.com/postgres
   version: {{ .Values.config.postgres.version | quote }}
-{{- if (not (empty .Values.persistence.backup.restore.postgresSnapshot)) }}
-{{- $restore := .Values.persistence.backup.restore }}
+  {{- if (not (empty .Values.persistence.backup.restore.postgresSnapshot)) }}
+  {{- $restore := .Values.persistence.backup.restore }}
 ---
 apiVersion: stash.appscode.com/v1alpha1
 kind: Repository
@@ -141,7 +141,7 @@ spec:
       {{- end }}
       {{- $fullname := (empty $restore.fullname | ternary (include "gitlab.fullname" .) $restore.fullname) }}
       prefix: '{{ .Values.persistence.backup.prefix }}/${TARGET_NAMESPACE}/postgres/{{ $fullname }}-postgres'
-    storageSecretName: {{ template "gitlab.fullname" . }}-backup
+      storageSecretName: {{ template "gitlab.fullname" . }}-backup
 ---
 apiVersion: stash.appscode.com/v1beta1
 kind: RestoreSession
@@ -165,7 +165,7 @@ spec:
       kind: AppBinding
       name: {{ template "gitlab.fullname" . }}-postgres
   rules:
-    - snapshots:
-      - {{ $restore.postgresSnapshot }}
-{{- end }}
-{{- end }}
+      - snapshots:
+        - {{ $restore.postgresSnapshot }}
+  {{- end }}
+  {{- end }}
